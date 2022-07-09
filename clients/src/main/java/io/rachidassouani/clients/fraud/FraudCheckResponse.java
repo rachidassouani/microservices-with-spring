@@ -1,4 +1,4 @@
-package io.rachidassouani.fraud;
+package io.rachidassouani.clients.fraud;
 
 public class FraudCheckResponse {
 
