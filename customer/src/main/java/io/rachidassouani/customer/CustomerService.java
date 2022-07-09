@@ -2,17 +2,22 @@ package io.rachidassouani.customer;
 
 import io.rachidassouani.clients.fraud.FraudCheckResponse;
 import io.rachidassouani.clients.fraud.FraudClient;
+import io.rachidassouani.clients.notification.NotificationClient;
+import io.rachidassouani.clients.notification.NotificationRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final FraudClient fraudClient;
+    private final NotificationClient notificationClient;
 
-    public CustomerService(CustomerRepository customerRepository, FraudClient fraudClient) {
+    public CustomerService(CustomerRepository customerRepository, FraudClient fraudClient, RestTemplate restTemplate, NotificationClient notificationClient) {
         this.customerRepository = customerRepository;
         this.fraudClient = fraudClient;
+        this.notificationClient = notificationClient;
     }
 
     public void registerCustomer(CustomerRegistrationRequest customerRegistrationRequest) {
@@ -38,5 +43,13 @@ public class CustomerService {
         if (fraudCheckResponse.isFraudster()) {
             throw new IllegalStateException("fraudster");
         }
+
+        // todo: send notification
+        NotificationRequest notificationRequest = new NotificationRequest();
+        notificationRequest.setCustomerId(customer.getId());
+        notificationRequest.setCustomerEmail(customer.getEmail());
+        notificationRequest.setMessage(String.format("Hello, %s ", customer.getFirstName()));
+
+        notificationClient.sendNotification(notificationRequest);
     }
 }
