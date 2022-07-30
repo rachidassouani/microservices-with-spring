@@ -14,6 +14,7 @@
     <module>eureka-sever</module>
       <module>clients</module>
     <module>notification</module>
+      <module>apigateway</module>
   </modules>
 
   <name>rachidServices</name>
